@@ -1,0 +1,4 @@
+#ifndef GESTAOVENDAS_MA_H
+#define GESTAOVENDAS_MA_H
+
+#endif //GESTAOVENDAS_MA_H
