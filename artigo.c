@@ -1,7 +1,7 @@
 #include "artigo.h"
 
 
-long insereArt(char* nome, float preco){
+long insereArt(char* nome, int preco){
 	//i
 	//gerar_codiog();
 	//escreve_artigo();
@@ -11,7 +11,7 @@ long insereArt(char* nome, float preco){
 	return -1;
 }
 
-int alteraNome(long codigo, char* nome){
+int alteraNome(int codigo, char* nome){
 	//n
 	//procura o artigo no ficheiro STRING
 	//se existir, altera o nome
@@ -19,7 +19,7 @@ int alteraNome(long codigo, char* nome){
 	//se erro return -1;
 }
 
-int alteraPreco(long codigo, float preco){
+int alteraPreco(int codigo, int preco){
 	//p
 	//procura o artigo no ficheiro ARTIGOS
 	//se existir, altera o preco
