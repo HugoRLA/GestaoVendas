@@ -50,6 +50,28 @@ int main(){
 
         }
     }
+  
+    if(strcmp(&cmd.operation,"i")==0) {
+        insereArt(cmd.option1, atof(cmd.option2));
+    }
+    else{
+        printf("errado\n");
+    }
+
+    if(strcmp(&cmd.operation,"n")==0) {
+        alteraNome(atof(cmd.option1), cmd.option2);
+    }
+    else{
+        printf("errado\n");
+    }
+
+    if(strcmp(&cmd.operation,"p")==0) {
+        alteraPreco(atof(cmd.option1), atof(cmd.option2));
+    }
+    else{
+        printf("errado\n");
+    }
+  
     return 0;
 
 
