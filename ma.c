@@ -1,10 +1,9 @@
-#include "ma.h"
-#include "utils.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "ma.h"
+#include "artigo.h"
 const int BUFFERSIZE = 256;
 
 typedef struct Command{
@@ -43,35 +42,30 @@ int main(){
 
             token = strtok(str, s);
             cmd.operation = token[0];
+
             token = strtok(NULL, s);
             cmd.option1 = token;
+
             token = strtok(NULL, s);
             cmd.option2 = token;
+
+            if(strcmp(cmd.operation, "i") == 0) {
+                insereArt(cmd.option1, atoi(cmd.option2));
+            }
+
+            if(strcmp(cmd.operation, "n") == 0) {
+                alteraNome(atol(cmd.option1), cmd.option2);
+            }
+
+
+            if(strcmp(cmd.operation, "p") == 0) {
+                alteraPreco(atol(cmd.option1), atoi(cmd.option2));
+            }
 
         }
     }
   
-    if(strcmp(&cmd.operation,"i")==0) {
-        insereArt(cmd.option1, atof(cmd.option2));
-    }
-    else{
-        printf("errado\n");
-    }
 
-    if(strcmp(&cmd.operation,"n")==0) {
-        alteraNome(atof(cmd.option1), cmd.option2);
-    }
-    else{
-        printf("errado\n");
-    }
-
-    if(strcmp(&cmd.operation,"p")==0) {
-        alteraPreco(atof(cmd.option1), atof(cmd.option2));
-    }
-    else{
-        printf("errado\n");
-    }
-  
     return 0;
 
 
