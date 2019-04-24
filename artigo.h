@@ -9,7 +9,7 @@ typedef struct Artigo{
 } Artigo;
 
 
-long insereArt(char* nome, int preco);
+long insereArt(char* nome, char* preco);
 int alteraNome(long codigo, char* nome);
 int alteraPreco(long codigo, int preco);
 

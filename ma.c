@@ -49,18 +49,20 @@ int main(){
             token = strtok(NULL, s);
             cmd.option2 = token;
 
-            if(strcmp(cmd.operation, "i") == 0) {
-                insereArt(cmd.option1, atoi(cmd.option2));
-            }
+            if(cmd.operation == 'i') {
 
-            if(strcmp(cmd.operation, "n") == 0) {
+                insereArt(cmd.option1, cmd.option2);
+
+            } else if (cmd.operation == 'n') {
+
                 alteraNome(atol(cmd.option1), cmd.option2);
-            }
 
+            } else if(cmd.operation == 'p'){
 
-            if(strcmp(cmd.operation, "p") == 0) {
                 alteraPreco(atol(cmd.option1), atoi(cmd.option2));
+
             }
+
 
         }
     }
