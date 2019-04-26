@@ -139,15 +139,54 @@ int alteraNome(long codigo, char* nome){
 
 }
 
-int alteraPreco(long codigo, int preco){
-	//p
-	//procura o artigo no ficheiro ARTIGOS
-	//se existir, altera o preco
-	//se nao existir -1;
-	//se erro return -1;
+int alteraPreco(long codigo, char* preco){
+    char* apontador;
+    int fdArtigos;
+    //meter como constane
+    int entrieSize = 64;
+    char entry[64];
+
+    const char s[2] = " ";
+    char *token;
+
+
+    fdArtigos = open("ARTIGOS.txt", O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdArtigos < 0){
+        printf("ERROR OPENING ARTIGOS FILE\n");
+
+    }
+
+    lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
+
+    read(fdArtigos, entry, entrieSize);
+
+
+    //Separa os comando pelo espaço
+
+    char* precoaux;
+
+    token = strtok(entry, s);
+    printf("Codigo: %s\n", token);
+
+    precoaux = strtok(NULL, s);
+    printf("preço: %s\n", preco);
+
+    apontador = strtok(NULL, s);
+    printf("apontador: %s\n", token);
+    int apontador1=atoi(apontador);
+
+    sprintf(entry, "%ld %s %d", codigo, preco, apontador1);
+    memset(entry + strlen(entry), ' ', entrieSize);
+    entry[entrieSize - 1] = '\n';
+
+    lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
+
+    write(fdArtigos, entry, entrieSize);
+
+    close(fdArtigos);
+
+
 
 }
-
-
 
 
