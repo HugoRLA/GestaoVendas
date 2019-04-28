@@ -1,68 +1,91 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 #include "ma.h"
-#include "artigo.h"
-const int BUFFERSIZE = 256;
 
-typedef struct Command{
-  char operation;
-  char* option1;
-  char* option2;
-} Command;
 
+
+int initMA(){
+
+
+    int fdStrings;
+    int fdArtigos;
+
+    fdStrings = open("STRINGS.txt", O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdStrings < 0){
+        printf("ERROR OPENING STRIGNS FILE\n");
+        exit(1);
+    }
+
+    fdArtigos = open("ARTIGOS.txt", O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdArtigos < 0){
+        printf("ERROR OPENING ARTIGOS FILE\n");
+        exit(1);
+    }
+
+    return 1;
+}
 
 int main(){
 
 
-    //ler continuadamente do standart input
-    char ch[BUFFERSIZE];
+    char ch[PIPE_BUF];
+    char argv[PIPE_BUF];
     int readByte;
-    const char s[2] = " ";
-    char *token;
-    Command cmd;
+    pid_t childpid;
+    int fd[2];
+    int read_fd, write_fd, n;
+    int status;
 
+    initMA();
 
+    while ((readByte = read(0, ch, PIPE_BUF)) > 0){
 
-    while ((readByte = read(0, ch, 256)) > 0){
+        pipe(fd);
+        read_fd = fd[0];
+        write_fd = fd[1];
 
         //o newline conta como byte lido
         if(readByte > 1) {
 
-            //para remover o new line
-            readByte = readByte -1;
-            //aloca tamanho
-            char *str = (char *) malloc(readByte  * sizeof(char));
+            if((childpid = fork()) == -1){
 
-            //copia para o ch os numero de bytes lidos
-            memmove(str, ch, readByte);
-
-            //Separa os comando pelo espaço
-
-            token = strtok(str, s);
-            cmd.operation = token[0];
-
-            token = strtok(NULL, s);
-            cmd.option1 = token;
-
-            token = strtok(NULL, s);
-            cmd.option2 = token;
-
-            if(cmd.operation == 'i') {
-
-                insereArt(cmd.option1, cmd.option2);
-
-            } else if (cmd.operation == 'n') {
-
-                alteraNome(atol(cmd.option1), cmd.option2);
-
-            } else if(cmd.operation == 'p'){
-
-                alteraPreco(atol(cmd.option1), atoi(cmd.option2));
-
+                exit(1);
             }
 
+            if (childpid == 0) {
+                /* Child process */
+
+                /* Close "read" endpoint - child will only use write end */
+                close(read_fd);
+
+                /* Now "bind" fd 1 (standard output) to our "write" end of pipe */
+
+                dup2(write_fd,1);
+
+                /* Execute command via shell - this will replace current process */
+
+                memset(argv, 0x0, PIPE_BUF);
+                strcat(argv, "./artigo ");
+                strcat(argv, ch);
+
+                execl("/bin/sh", "sh", "-c", argv, NULL);
+                exit(1);
+
+            } else {
+                /* Parent */
+
+                /* Close "write" end, not needed in this process */
+                close(write_fd);
+
+                wait(&status);
+
+                memset(ch, 0x0, PIPE_BUF);
+
+                while ((n = read(read_fd, ch, PIPE_BUF)) > 0){
+                    write(1,ch,n);
+                };
+
+                memset(ch, 0x0, PIPE_BUF);
+            }
 
         }
     }
@@ -72,4 +95,7 @@ int main(){
 
 
 }
+
+
+
 

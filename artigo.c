@@ -6,7 +6,33 @@
 
 
 
-long insereArt(char* nome, char* preco){
+int main(int argc, char const *argv[]) {
+
+    int i = 0;
+    int res;
+
+    if(strcmp("i",argv[1]) == 0 ){
+
+        insereArt(argv[2], argv[3]);
+
+        //write(1,)
+
+    }else if(strcmp("n",argv[1])== 0){
+
+        alteraNome(atol(argv[2]), argv[3]);
+
+    }else if(strcmp("p",argv[1])== 0){
+
+        alteraPreco(atol(argv[2]), argv[3]);
+
+    }
+
+
+
+}
+
+
+int insereArt(const char* nome,const char* preco){
 
     int codigo = -1;
     int apontador;
@@ -17,13 +43,12 @@ long insereArt(char* nome, char* preco){
     char entry[64];
 
 
-
-    fdStrings = open("STRINGS.txt",O_CREAT | O_RDWR |O_APPEND, S_IRWXU | S_IRWXG | S_IRWXO);
+    fdStrings = open("STRINGS.txt", O_WRONLY);
     if(fdStrings < 0){
         printf("ERROR OPENING STRIGNS FILE\n");
     }
 
-    fdArtigos = open("ARTIGOS.txt", O_CREAT | O_RDWR | O_APPEND, S_IRWXU | S_IRWXG | S_IRWXO);
+    fdArtigos = open("ARTIGOS.txt", O_WRONLY);
     if(fdArtigos < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
 
@@ -32,10 +57,8 @@ long insereArt(char* nome, char* preco){
     //criar apontador
 
     apontador = lseek(fdStrings, 0 , SEEK_END);
-    printf("Apontador para String : %d\n", apontador);
 
     //adicionar newline ao nome
-
     char *newstr = malloc(strlen(nome) + 2);
     strcpy(newstr, nome);
     strcat(newstr, "\n");
@@ -44,9 +67,6 @@ long insereArt(char* nome, char* preco){
 
 
     codigo = lseek(fdArtigos, 0 , SEEK_END) / entrieSize;
-    printf("Codigo : %d\n", codigo);
-
-
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador);
     memset(entry + strlen(entry), ' ', entrieSize);
@@ -57,10 +77,17 @@ long insereArt(char* nome, char* preco){
     close(fdArtigos);
     close(fdStrings);
 
-	return codigo;
+    memset(entry, 0x0, entrieSize);
+    sprintf(entry, "%d", codigo);
+    memset(entry + strlen(entry), ' ', entrieSize);
+    entry[entrieSize - 1] = '\n';
+
+    write(1, entry,entrieSize);
+
+    return 1;
 }
 
-int alteraNome(long codigo, char* nome){
+int alteraNome(int codigo,const char* nome){
 
 
 
@@ -76,12 +103,12 @@ int alteraNome(long codigo, char* nome){
 
 
 
-    fdStrings = open("STRINGS.txt",O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+    fdStrings = open("STRINGS.txt",O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdStrings < 0){
         printf("ERROR OPENING STRIGNS FILE\n");
     }
 
-    fdArtigos = open("ARTIGOS.txt", O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+    fdArtigos = open("ARTIGOS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdArtigos < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
 
@@ -115,18 +142,11 @@ int alteraNome(long codigo, char* nome){
     char* preco;
 
     token = strtok(entry, s);
-
-    printf("Codigo: %s\n", token);
-
     preco = strtok(NULL, s);
-
-    printf("preço: %s\n", token);
-
     token = strtok(NULL, s);
 
-    printf("apontador: %s\n", token);
 
-    sprintf(entry, "%ld %s %d", codigo, preco, apontador);
+    sprintf(entry, "%d %s %d", codigo, preco, apontador);
     memset(entry + strlen(entry), ' ', entrieSize);
     entry[entrieSize - 1] = '\n';
 
@@ -137,9 +157,11 @@ int alteraNome(long codigo, char* nome){
     close(fdArtigos);
     close(fdStrings);
 
+    return 1;
+
 }
 
-int alteraPreco(long codigo, char* preco){
+int alteraPreco(int codigo, const char* preco){
     char* apontador;
     int fdArtigos;
     //meter como constane
@@ -175,7 +197,7 @@ int alteraPreco(long codigo, char* preco){
     printf("apontador: %s\n", token);
     int apontador1=atoi(apontador);
 
-    sprintf(entry, "%ld %s %d", codigo, preco, apontador1);
+    sprintf(entry, "%d %s %d", codigo, preco, apontador1);
     memset(entry + strlen(entry), ' ', entrieSize);
     entry[entrieSize - 1] = '\n';
 
@@ -185,8 +207,14 @@ int alteraPreco(long codigo, char* preco){
 
     close(fdArtigos);
 
-
+    return 1;
 
 }
+
+
+
+
+
+
 
 
