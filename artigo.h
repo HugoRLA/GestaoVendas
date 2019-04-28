@@ -11,5 +11,5 @@ typedef struct Artigo{
 
 long insereArt(char* nome, char* preco);
 int alteraNome(long codigo, char* nome);
-int alteraPreco(long codigo, int preco);
+int alteraPreco(long codigo, char* preco);
 
