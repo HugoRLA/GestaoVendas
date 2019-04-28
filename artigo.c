@@ -15,8 +15,6 @@ int main(int argc, char const *argv[]) {
 
         insereArt(argv[2], argv[3]);
 
-        //write(1,)
-
     }else if(strcmp("n",argv[1])== 0){
 
         alteraNome(atol(argv[2]), argv[3]);
@@ -172,7 +170,7 @@ int alteraPreco(int codigo, const char* preco){
     char *token;
 
 
-    fdArtigos = open("ARTIGOS.txt", O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+    fdArtigos = open("ARTIGOS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdArtigos < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
 

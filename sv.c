@@ -1,12 +1,82 @@
 #include "sv.h"
 
 
+
+void my_popen (const char *cmd, int privatefifo)
+{
+    int fd[2];
+    int read_fd, write_fd, status,n;
+    int pid;
+    char ch[PIPE_BUF];
+    char argv[PIPE_BUF];
+
+    /* First, create a pipe and a pair of file descriptors for its both ends */
+    pipe(fd);
+    read_fd = fd[0];
+    write_fd = fd[1];
+
+    /* Now fork in order to create process from we'll read from */
+    pid = fork();
+    if (pid == 0) {
+        /* Child process */
+
+        /* Close "read" endpoint - child will only use write end */
+        close(read_fd);
+
+        /* Now "bind" fd 1 (standard output) to our "write" end of pipe */
+        dup2(write_fd,1);
+
+        memset(argv, 0x0, PIPE_BUF);
+        strcat(argv, "./artigo ");
+        strcat(argv, cmd);
+        printf("argv %s\n", argv);
+
+        /* Execute command via shell - this will replace current process */
+        execl("/bin/sh", "sh", "-c", argv, NULL);
+
+
+    } else {
+        /* Parent */
+
+        /* Close "write" end, not needed in this process */
+        close(write_fd);
+
+        wait(&status);
+
+        memset(ch, 0x0, PIPE_BUF);
+        
+        write(privatefifo, ch, n);
+        
+        close(privatefifo);
+    }
+}
+
+
+
+initServer(){
+
+    int fdVendas = open("VENDAS.txt",O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdVendas < 0){
+        printf("ERROR OPENING VENDAS FILE\n");
+    }
+    close(fdVendas);
+
+    int fdStock = open("STOCKS.txt", O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdStock  < 0){
+        printf("ERROR OPENING STOCKS FILE\n");
+
+    }
+    close(fdStock);
+}
+
 int main(){
 
     int privatefifo, dummyfifo, publicfifo, n, done;
     struct message msg;
     FILE *fin;
     static char buffer[PIPE_BUF];
+
+    initServer();
 
     /*creating the PUBLIC fifo*/
     mkfifo(PUBLIC, S_IFIFO | 0666);
@@ -37,23 +107,10 @@ int main(){
                 sleep(5);
             }
             else {
-
-
-
-                write(privatefifo,"\n",1);
-                printf("MSG FROM FIFO : %s\n", msg.fifo_name);
-                printf("MSG COMMAND : %s\n", msg.cmd_line);
-
-                write(privatefifo,msg.cmd_line, strlen(msg.cmd_line));
-                memset(buffer, 0x0, PIPE_BUF);
-
-                //while((n= read(fileno(fin), buffer, PIPE_BUF)) > 0) {
-                //    write(privatefifo, buffer, n);
-                //    memset(buffer, 0x0, PIPE_BUF);
-                //}
-
-
-                done = 1;
+                printf("comando : %s", msg.cmd_line);
+                    my_popen(msg.cmd_line, privatefifo);
+                    
+                    done = 1;
             }
         }while(n++ < 5 && !done);
 
@@ -66,3 +123,4 @@ int main(){
     return 0;
 
 }
+
