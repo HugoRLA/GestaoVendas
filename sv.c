@@ -27,12 +27,14 @@ void my_popen (const char *cmd, int privatefifo)
         dup2(write_fd,1);
 
         memset(argv, 0x0, PIPE_BUF);
-        strcat(argv, "./artigo ");
+        strcat(argv, "./stock ");
         strcat(argv, cmd);
         printf("argv %s\n", argv);
 
         /* Execute command via shell - this will replace current process */
         execl("/bin/sh", "sh", "-c", argv, NULL);
+
+        exit(1);
 
 
     } else {
@@ -44,8 +46,10 @@ void my_popen (const char *cmd, int privatefifo)
         wait(&status);
 
         memset(ch, 0x0, PIPE_BUF);
-        
-        write(privatefifo, ch, n);
+
+        while ((n = read(read_fd, ch, PIPE_BUF)) > 0){
+            write(privatefifo,ch,n);
+        };
         
         close(privatefifo);
     }
@@ -107,10 +111,9 @@ int main(){
                 sleep(5);
             }
             else {
-                printf("comando : %s", msg.cmd_line);
-                    my_popen(msg.cmd_line, privatefifo);
-                    
-                    done = 1;
+
+                my_popen(msg.cmd_line, privatefifo);
+                done = 1;
             }
         }while(n++ < 5 && !done);
 
