@@ -7,7 +7,7 @@ add_executable(artigo artigo.c artigo.h)
 
 add_executable(stock stock.c stock.h)
 
-add_executable(ma ma.c ma.h artigo)
+add_executable(ma ma.c ma.h)
 
 add_executable(sv sv.c sv.h )
 

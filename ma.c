@@ -14,12 +14,14 @@ int initMA(){
         printf("ERROR OPENING STRIGNS FILE\n");
         exit(1);
     }
+    close(fdStrings);
 
     fdArtigos = open("ARTIGOS.txt", O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdArtigos < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
         exit(1);
     }
+    close(fdArtigos);
 
     return 1;
 }
@@ -63,6 +65,8 @@ int main(){
 
                 /* Execute command via shell - this will replace current process */
 
+                //closer(write_fd)?????
+
                 memset(argv, 0x0, PIPE_BUF);
                 strcat(argv, "./artigo ");
                 strcat(argv, ch);
@@ -77,7 +81,7 @@ int main(){
                 close(write_fd);
 
                 wait(&status);
-
+                //usar argv em vez do ch
                 memset(ch, 0x0, PIPE_BUF);
 
                 while ((n = read(read_fd, ch, PIPE_BUF)) > 0){

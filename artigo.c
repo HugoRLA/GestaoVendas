@@ -67,6 +67,7 @@ int insereArt(const char* nome,const char* preco){
     codigo = lseek(fdArtigos, 0 , SEEK_END) / entrieSize;
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador);
+    //meter 0x0 em vez de espaço
     memset(entry + strlen(entry), ' ', entrieSize);
     entry[entrieSize - 1] = '\n';
 
@@ -75,6 +76,9 @@ int insereArt(const char* nome,const char* preco){
     close(fdArtigos);
     close(fdStrings);
 
+
+    // talvez desnecessario limpar o array em meter o codigo,
+    // calcular o tamanhi do codigo
     memset(entry, 0x0, entrieSize);
     sprintf(entry, "%d", codigo);
     memset(entry + strlen(entry), ' ', entrieSize);
