@@ -23,6 +23,13 @@ int initMA(){
     }
     close(fdArtigos);
 
+    int fdStock = open("STOCKS.txt", O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdStock  < 0){
+        printf("ERROR OPENING STOCKS FILE\n");
+
+    }
+    close(fdStock);
+
     return 1;
 }
 

@@ -37,10 +37,10 @@ int insereArt(const char* nome,const char* preco){
     int fdStrings;
     int fdArtigos;
     //TODO meter como constante
-    int entrieSize = 64;
-    char entry[64];
+    int entrieSize = 10;
+    char entry[10];
 
-
+    //retirar of prinfts, escrever para o stdin do processo
     fdStrings = open("STRINGS.txt", O_WRONLY);
     if(fdStrings < 0){
         printf("ERROR OPENING STRIGNS FILE\n");
@@ -50,6 +50,10 @@ int insereArt(const char* nome,const char* preco){
     if(fdArtigos < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
 
+    }
+    int fdStock = open("STOCKS.txt", O_WRONLY);
+    if(fdStock  < 0){
+        printf("ERROR OPENING STOCKS FILE\n");
     }
 
     //criar apontador
@@ -73,8 +77,18 @@ int insereArt(const char* nome,const char* preco){
 
     write(fdArtigos, entry, entrieSize);
 
+
+    memset(entry, 0x0, entrieSize);
+    sprintf(entry, "%d %d", codigo,0);
+    memset(entry + strlen(entry), ' ', entrieSize);
+    entry[entrieSize - 1] = '\n';
+
+    write(fdStock, entry, entrieSize);
+
+
     close(fdArtigos);
     close(fdStrings);
+    close(fdStock);
 
 
     // talvez desnecessario limpar o array em meter o codigo,
@@ -85,6 +99,9 @@ int insereArt(const char* nome,const char* preco){
     entry[entrieSize - 1] = '\n';
 
     write(1, entry,entrieSize);
+
+
+
 
     return 1;
 }
@@ -97,8 +114,8 @@ int alteraNome(int codigo,const char* nome){
     int fdStrings;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 64;
-    char entry[64];
+    int entrieSize = 10;
+    char entry[10];
 
     const char s[2] = " ";
     char *token;
@@ -167,8 +184,8 @@ int alteraPreco(int codigo, const char* preco){
     char* apontador;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 64;
-    char entry[64];
+    int entrieSize = 10;
+    char entry[10];
 
     const char s[2] = " ";
     char *token;
