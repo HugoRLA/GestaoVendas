@@ -7,31 +7,43 @@ void showStock(int codigo){
     int entrieSize = 10;
     char entry[10];
     int readBytes;
-
+    int readBytes1;
+    const char s[1] = " ";
+   const char s1[2]=" ";
     int fdStock = open("STOCKS.txt", O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdStock  < 0){
         printf("ERROR OPENING STOCKS FILE\n");
     }
-
+    int fdArtigos = open("ARTIGOS.txt", O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdArtigos  < 0){
+        printf("ERROR OPENING ARTIGOS FILE\n");
+    }
+    //buscar a quantidade
     lseek(fdStock, codigo * entrieSize, SEEK_SET);
 
-    if( (readBytes = read(fdStock, entry, entrieSize)) == 0 ){
+    readBytes =read(fdStock, entry,entrieSize);
+    char* token1;
+    char* quantidade;
 
-        //quantidade 0
+    token1 = strtok(entry, s);
 
-    }else{
+    quantidade= strtok(NULL, s);
+    int quantidade1=atoi(quantidade);
 
-        //parse da linha para obter quantidade, mesma coisa que fizemos no artigo ppara modificar o preco
-    }
+    lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
 
-    //abrir ficheiros dos artigos para saber o preco
+    read(fdArtigos, entry, entrieSize);
+    char* token;
+    char* precoaux;
 
-    //posicinar com o lseek
+    token = strtok(entry, s1);
 
-    //ler a linha e basicamente fazer o mesmo que em cima no if
+    precoaux = strtok(NULL, s1);
 
+    printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
 
-    //write da quantidade e do preco
+    close(fdArtigos);
+    close(fdStock);
 
 
 }
