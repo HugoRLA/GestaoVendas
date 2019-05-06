@@ -7,9 +7,8 @@ void showStock(int codigo){
     int entrieSize = 10;
     char entry[10];
     int readBytes;
-    int readBytes1;
-    const char s[1] = " ";
-   const char s1[2]=" ";
+    const char s[2] = " ";
+   
     int fdStock = open("STOCKS.txt", O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdStock  < 0){
         printf("ERROR OPENING STOCKS FILE\n");
@@ -36,9 +35,9 @@ void showStock(int codigo){
     char* token;
     char* precoaux;
 
-    token = strtok(entry, s1);
+    token = strtok(entry, s);
 
-    precoaux = strtok(NULL, s1);
+    precoaux = strtok(NULL, s);
 
     printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
 
