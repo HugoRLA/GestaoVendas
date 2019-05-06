@@ -50,10 +50,53 @@ void showStock(int codigo){
 
 void modifyStock(int codigo, int quantidade){
 
+    int apontador;
+    int fdArtigos;
+    //meter como constane
+    int entrieSize = 10;
+    char entry[10];
 
-    //abrir ficheiro do stock
+    const char s[2] = " ";
+    char *token;
 
-    printf("hugo");
+    int fdStock = open("STOCKS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fdStock  < 0){
+        printf("ERROR OPENING STOCKS FILE\n");
+    }
+
+    if(quantidade > 0){
+
+
+        apontador = lseek(fdStock, codigo * entrieSize, SEEK_SET);
+
+        read(fdStock, entry, entrieSize);
+
+        char* quantidadeStock;
+
+        token = strtok(entry, s);
+        printf("Codigo: %s\n", token);
+
+        quantidadeStock = strtok(NULL, s);
+        printf("quantidade stock: %s\n", quantidadeStock);
+
+
+        int quantidadeFinal = atoi(quantidadeStock)+ quantidade;
+
+        sprintf(entry, "%d %d", codigo, quantidadeFinal);
+        memset(entry + strlen(entry), ' ', entrieSize);
+        entry[entrieSize - 1] = '\n';
+
+        lseek(fdStock, codigo * entrieSize, SEEK_SET);
+
+        write(fdStock, entry, entrieSize);
+
+        close(fdStock);
+
+    }else{
+
+    }
+
+
 
 
 }
