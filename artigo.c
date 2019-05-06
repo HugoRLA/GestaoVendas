@@ -78,6 +78,8 @@ int insereArt(const char* nome,const char* preco){
     write(fdArtigos, entry, entrieSize);
 
 
+    lseek(fdStock, 0 , SEEK_END);
+
     memset(entry, 0x0, entrieSize);
     sprintf(entry, "%d %d", codigo,0);
     memset(entry + strlen(entry), ' ', entrieSize);
