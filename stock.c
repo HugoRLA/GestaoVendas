@@ -6,9 +6,11 @@ void showStock(int codigo){
 
     int entrieSize = 10;
     char entry[10];
-    int readBytes;
+
     const char s[2] = " ";
-   
+    char *token;
+    char *precoaux;
+    char *quantidade;
     int fdStock = open("STOCKS.txt", O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdStock  < 0){
         printf("ERROR OPENING STOCKS FILE\n");
@@ -20,11 +22,10 @@ void showStock(int codigo){
     //buscar a quantidade
     lseek(fdStock, codigo * entrieSize, SEEK_SET);
 
-    readBytes =read(fdStock, entry,entrieSize);
-    char* token1;
-    char* quantidade;
+    read(fdStock, entry,entrieSize);
 
-    token1 = strtok(entry, s);
+
+    token = strtok(entry, s);
 
     quantidade= strtok(NULL, s);
     int quantidade1=atoi(quantidade);
@@ -32,8 +33,6 @@ void showStock(int codigo){
     lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
 
     read(fdArtigos, entry, entrieSize);
-    char* token;
-    char* precoaux;
 
     token = strtok(entry, s);
 
@@ -47,39 +46,31 @@ void showStock(int codigo){
 
 }
 
-void modifyStock(int codigo, int quantidade){
+void modifyStock(int codigo, int quantidade) {
 
-    int apontador;
-    int fdArtigos;
-    //meter como constane
     int entrieSize = 10;
     char entry[10];
 
+    char* quantidadeStock;
+    char* precoaux;
+    char* token;
     const char s[2] = " ";
-    char *token;
-
-    int fdStock = open("STOCKS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
-    if(fdStock  < 0){
-        printf("ERROR OPENING STOCKS FILE\n");
-    }
-
-    if(quantidade > 0){
 
 
-        apontador = lseek(fdStock, codigo * entrieSize, SEEK_SET);
+    if (quantidade > 0) {
+        int fdStock = open("STOCKS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+        if (fdStock < 0) {
+            printf("ERROR OPENING STOCKS FILE\n");
+        }
+
+        lseek(fdStock, codigo * entrieSize, SEEK_SET);
 
         read(fdStock, entry, entrieSize);
 
-        char* quantidadeStock;
-
         token = strtok(entry, s);
-        printf("Codigo: %s\n", token);
-
         quantidadeStock = strtok(NULL, s);
-        printf("quantidade stock: %s\n", quantidadeStock);
 
-
-        int quantidadeFinal = atoi(quantidadeStock)+ quantidade;
+        int quantidadeFinal = atoi(quantidadeStock) + quantidade;
 
         sprintf(entry, "%d %d", codigo, quantidadeFinal);
         memset(entry + strlen(entry), ' ', entrieSize);
@@ -88,16 +79,71 @@ void modifyStock(int codigo, int quantidade){
         lseek(fdStock, codigo * entrieSize, SEEK_SET);
 
         write(fdStock, entry, entrieSize);
+        write(1, entry, entrieSize);
 
         close(fdStock);
+    } else {
 
-    }else{
+        int fdStock = open("STOCKS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+        if (fdStock < 0) {
+            printf("ERROR OPENING STOCKS FILE\n");
+        }
+        int fdArtigos = open("ARTIGOS.txt", O_RDWR, S_IRWXU | S_IRWXG | S_IRWXO);
+        if (fdStock < 0) {
+            printf("ERROR OPENING ARTIGOS FILE\n");
+        }
+        int fdVenda = open("VENDAS.txt", O_RDWR | O_CREAT | O_APPEND,0666);
+        if (fdVenda < 0) {
+            printf("ERROR OPENING VENDA FILE\n");
+        }
+
+        lseek(fdStock, codigo * entrieSize, SEEK_SET);
+
+        read(fdStock, entry, entrieSize);
+
+        token = strtok(entry, s);
+        char *quantidadeStock = strtok(NULL, s);
+
+        int guardaQuant = atoi(quantidadeStock);
+
+        lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
+        read(fdArtigos, entry, entrieSize);
+
+
+        token = strtok(entry, s);
+
+        precoaux = strtok(NULL, s);
+
+        int preco=atoi(precoaux);
+
+        int quantidadenova = guardaQuant + quantidade;
+
+        if(quantidadenova >= 0) {
+
+            sprintf(entry, "%d %d", codigo, quantidadenova);
+            memset(entry + strlen(entry), ' ', entrieSize);
+            entry[entrieSize-1]='\n';
+            lseek(fdStock, codigo * entrieSize, SEEK_SET);
+            write(fdStock, entry, entrieSize);
+
+             int montante = preco*(-quantidade);
+             printf("Codigo: %d Preco: %d Montante: %d",codigo,preco,montante);
+                sprintf(entry, "%d %d %d", codigo, -quantidade,montante);
+                memset(entry + strlen(entry), ' ', entrieSize);
+                entry[entrieSize-1]='\n';
+                lseek(fdVenda, codigo * entrieSize, SEEK_SET);
+                write(fdVenda,entry,entrieSize);
+
+            
+        }else{
+            printf("Nao é possivel efetuar o seu pedido de venda, quantidade atual é: %d",guardaQuant);
+
+            close(fdVenda);
+            close(fdArtigos);
+            close(fdStock);
 
     }
-
-
-
-
+ }
 }
 
 int main(int argc, char const *argv[]){
