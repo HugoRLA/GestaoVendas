@@ -10,6 +10,8 @@ void my_popen (const char *cmd, int privatefifo)
     char ch[PIPE_BUF];
     char argv[PIPE_BUF];
 
+
+
     /* First, create a pipe and a pair of file descriptors for its both ends */
     pipe(fd);
     read_fd = fd[0];
@@ -51,13 +53,13 @@ void my_popen (const char *cmd, int privatefifo)
             write(privatefifo,ch,n);
         };
         
-        close(privatefifo);
+
     }
 }
 
 
 
-initServer(){
+void initServer(){
 
     int fdVendas = open("VENDAS.txt",O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdVendas < 0){
@@ -103,23 +105,16 @@ int main(){
     /*Read the message from PUBLIC fifo*/
     while(read(publicfifo, &msg, sizeof(msg)) > 0) {
 
-        n=0;
-        done=0;
+        if(fork() == 0) {
 
-        do {
-            if((privatefifo = open(msg.fifo_name, O_WRONLY|O_NDELAY)) == -1) {
-                sleep(5);
-            }
-            else {
+            privatefifo = open(msg.fifo_name, O_WRONLY|O_NDELAY);
 
-                my_popen(msg.cmd_line, privatefifo);
-                done = 1;
-            }
-        }while(n++ < 5 && !done);
+            my_popen(msg.cmd_line, privatefifo);
 
-        if(!done) {
-            perror("Not accessed the private fifo\n");
-            _exit(1);
+            close(privatefifo);
+
+            exit(EXIT_SUCCESS);
+
         }
 
     }
