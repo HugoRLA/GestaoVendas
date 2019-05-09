@@ -105,7 +105,8 @@ int main(){
     /*Read the message from PUBLIC fifo*/
     while(read(publicfifo, &msg, sizeof(msg)) > 0) {
 
-        if(fork() == 0) {
+        int pid;
+        if((pid = fork()) == 0) {
 
             privatefifo = open(msg.fifo_name, O_WRONLY|O_NDELAY);
 
@@ -115,7 +116,12 @@ int main(){
 
             exit(EXIT_SUCCESS);
 
+        }else{
+
+            signal(SIGCHLD,SIG_IGN);
+
         }
+
 
     }
     return 0;
