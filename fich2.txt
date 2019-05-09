@@ -1,0 +1,5 @@
+i banana 2 
+i morango 23
+i pera 2
+n 0 maca
+p 1 22
