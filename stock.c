@@ -4,8 +4,8 @@
 
 void showStock(int codigo){
 
-    int entrieSize = 10;
-    char entry[10];
+    int entrieSize = 30;
+    char entry[30];
 
     const char s[2] = " ";
     char *token;
@@ -48,8 +48,8 @@ void showStock(int codigo){
 
 void modifyStock(int codigo, int quantidade) {
 
-    int entrieSize = 10;
-    char entry[10];
+    int entrieSize = 30;
+    char entry[30];
 
     char* quantidadeStock;
     char* precoaux;
