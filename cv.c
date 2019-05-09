@@ -7,6 +7,7 @@ int main()
     int publicfifo, privatefifo, n;
     static char buffer[PIPE_BUF];
     struct message msg;
+    int i=0;
 
     /*Using sprintf to create a unique fifo name
     and save into message structure*/
@@ -25,21 +26,19 @@ int main()
         _exit(1);
     }
 
-    while(1) {
-
-        //remover apos estar estado
-        write(0, "\n cmd>", 6);
-        memset(msg.cmd_line, 0x0, B_SIZE);
-
-        n = read(0, msg.cmd_line, B_SIZE);
-
+    while (read(0, &buffer[i], 1) >0) {
+       /* end of line */ 
+    if (buffer[i] == '\n' || buffer[i] == 0x0) {
+       
+       strcpy(msg.cmd_line,buffer);
+       
         //escreve para o servidor
         write(publicfifo, &msg, sizeof(msg));
 
 
         //abre fifo privado para ler do servidor
         if((privatefifo = open(msg.fifo_name, O_RDONLY))< 0) {
-            printf("1\n");
+          ///  printf("1\n");
             perror(msg.fifo_name);
             goto CLEANUP;
         }
@@ -49,10 +48,14 @@ int main()
         }
 
         close(privatefifo);
+            
+    
+     i=0;
 
     }
+    else {i++;}
 
-
+}
     //fecha e elimana fifo
     CLEANUP:
     close(publicfifo);
