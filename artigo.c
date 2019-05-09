@@ -37,8 +37,8 @@ int insereArt(const char* nome,const char* preco){
     int fdStrings;
     int fdArtigos;
     //TODO meter como constante
-    int entrieSize = 30;
-    char entry[30];
+    int entrieSize = 20;
+    char entry[20];
 
     //retirar of prinfts, escrever para o stdin do processo
     fdStrings = open("STRINGS.txt", O_WRONLY);
@@ -72,7 +72,7 @@ int insereArt(const char* nome,const char* preco){
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador);
     //meter 0x0 em vez de espaço
-    memset(entry + strlen(entry), ' ', entrieSize);
+    memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
     entry[entrieSize - 1] = '\n';
 
     write(fdArtigos, entry, entrieSize);
@@ -82,7 +82,7 @@ int insereArt(const char* nome,const char* preco){
 
     memset(entry, 0x0, entrieSize);
     sprintf(entry, "%d %d", codigo,0);
-    memset(entry + strlen(entry), ' ', entrieSize);
+    memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
     entry[entrieSize - 1] = '\n';
 
     write(fdStock, entry, entrieSize);
@@ -97,7 +97,7 @@ int insereArt(const char* nome,const char* preco){
     // calcular o tamanhi do codigo
     memset(entry, 0x0, entrieSize);
     sprintf(entry, "%d", codigo);
-    memset(entry + strlen(entry), ' ', entrieSize);
+    memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
     entry[entrieSize - 1] = '\n';
 
     write(1, entry,entrieSize);
@@ -116,8 +116,8 @@ int alteraNome(int codigo,const char* nome){
     int fdStrings;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 30;
-    char entry[30];
+    int entrieSize = 20;
+    char entry[20];
 
     const char s[2] = " ";
     char *token;
@@ -168,7 +168,7 @@ int alteraNome(int codigo,const char* nome){
 
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador);
-    memset(entry + strlen(entry), ' ', entrieSize);
+    memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
     entry[entrieSize - 1] = '\n';
 
     lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
@@ -186,8 +186,8 @@ int alteraPreco(int codigo, const char* preco){
     char* apontador;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 30;
-    char entry[30];
+    int entrieSize = 20;
+    char entry[20];
 
     const char s[2] = " ";
     char *token;
@@ -219,7 +219,7 @@ int alteraPreco(int codigo, const char* preco){
     int apontador1=atoi(apontador);
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador1);
-    memset(entry + strlen(entry), ' ', entrieSize);
+    memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
     entry[entrieSize - 1] = '\n';
 
     lseek(fdArtigos, codigo * entrieSize, SEEK_SET);
@@ -231,7 +231,6 @@ int alteraPreco(int codigo, const char* preco){
     return 1;
 
 }
-
 
 
 
