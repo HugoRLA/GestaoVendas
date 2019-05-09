@@ -159,8 +159,8 @@ void modifyStock(int codigo, int quantidade) {
             sprintf(entry, "%d %d %d", codigo, -quantidade, montante);
             memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
             entry[entrieSize-1] = '\n';
-            
-            
+
+            lseek(fdVenda, 0, SEEK_END);
             write(fdVenda, entry, entrieSize);
 
             //send output to client
