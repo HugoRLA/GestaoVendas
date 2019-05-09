@@ -1,8 +1,6 @@
 
 #include "ma.h"
 
-
-
 int initMA(){
 
 
@@ -43,17 +41,22 @@ int main(){
     int fd[2];
     int read_fd, write_fd, n;
     int status;
-
+    int i=0;
     initMA();
 
-    while ((readByte = read(0, ch, PIPE_BUF)) > 0){
+
+while (read(0, &ch[i], 1) > 0) {
+   // printf("ch : %c\n",ch[i] );
+    /* end of line */
+    if (ch[i] == '\n' || ch[i] == 0x0) {
+
+        //printf("cenas : %s\n", ch);
 
         pipe(fd);
         read_fd = fd[0];
         write_fd = fd[1];
 
-        //o newline conta como byte lido
-        if(readByte > 1) {
+
 
             if((childpid = fork()) == -1){
 
@@ -72,13 +75,15 @@ int main(){
 
                 /* Execute command via shell - this will replace current process */
 
-                //closer(write_fd)?????
+                //close(write_fd);
 
                 memset(argv, 0x0, PIPE_BUF);
                 strcat(argv, "./artigo ");
                 strcat(argv, ch);
+               
 
                 execl("/bin/sh", "sh", "-c", argv, NULL);
+                 
                 exit(1);
 
             } else {
@@ -90,7 +95,7 @@ int main(){
                 wait(&status);
                 //usar argv em vez do ch
                 memset(ch, 0x0, PIPE_BUF);
-
+            
                 while ((n = read(read_fd, ch, PIPE_BUF)) > 0){
                     write(1,ch,n);
                 };
@@ -98,7 +103,12 @@ int main(){
                 memset(ch, 0x0, PIPE_BUF);
             }
 
-        }
+            i =0;
+
+
+        }else{
+        i++;
+    }
     }
   
 
@@ -106,7 +116,5 @@ int main(){
 
 
 }
-
-
 
 
