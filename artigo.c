@@ -37,8 +37,8 @@ int insereArt(const char* nome,const char* preco){
     int fdStrings;
     int fdArtigos;
     //TODO meter como constante
-    int entrieSize = 10;
-    char entry[10];
+    int entrieSize = 30;
+    char entry[30];
 
     //retirar of prinfts, escrever para o stdin do processo
     fdStrings = open("STRINGS.txt", O_WRONLY);
@@ -116,8 +116,8 @@ int alteraNome(int codigo,const char* nome){
     int fdStrings;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 10;
-    char entry[10];
+    int entrieSize = 30;
+    char entry[30];
 
     const char s[2] = " ";
     char *token;
@@ -186,8 +186,8 @@ int alteraPreco(int codigo, const char* preco){
     char* apontador;
     int fdArtigos;
     //meter como constane
-    int entrieSize = 10;
-    char entry[10];
+    int entrieSize = 30;
+    char entry[30];
 
     const char s[2] = " ";
     char *token;
