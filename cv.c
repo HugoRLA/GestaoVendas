@@ -43,14 +43,18 @@ int main()
             goto CLEANUP;
         }
 
+
+        memset(buffer, 0x0, PIPE_BUF);
+
         while((n = read(privatefifo, buffer, PIPE_BUF)) > 0) {
              write(1, buffer, n);
         }
 
+        memset(buffer, 0x0, PIPE_BUF);
         close(privatefifo);
             
     
-     i=0;
+        i=0;
 
     }
     else {i++;}
