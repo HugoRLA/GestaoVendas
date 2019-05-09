@@ -1,16 +1,15 @@
 
 #include "stock.h"
 
-
 void showStock(int codigo){
 
     int entrieSize = 30;
     char entry[30];
-
     const char s[2] = " ";
     char *token;
     char *precoaux;
     char *quantidade;
+
     int fdStock = open("STOCKS.txt", O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fdStock  < 0){
         printf("ERROR OPENING STOCKS FILE\n");
@@ -24,9 +23,7 @@ void showStock(int codigo){
 
     read(fdStock, entry,entrieSize);
 
-
     token = strtok(entry, s);
-
     quantidade= strtok(NULL, s);
     int quantidade1=atoi(quantidade);
 
@@ -37,14 +34,22 @@ void showStock(int codigo){
     token = strtok(entry, s);
 
     precoaux = strtok(NULL, s);
-
-    printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
+    int preco=atoi(precoaux);
+   // printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
 
     close(fdArtigos);
     close(fdStock);
 
+    memset(entry, 0x0, entrieSize);
+    sprintf(entry, "Q: %d P:%d",quantidade1,preco);
+    memset(entry + strlen(entry), ' ', entrieSize-strlen(entry));
+    entry[entrieSize - 1] = '\n';
+
+    write(1, entry,entrieSize);
+
 
 }
+
 
 void modifyStock(int codigo, int quantidade) {
 
