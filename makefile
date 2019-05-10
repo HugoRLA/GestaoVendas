@@ -17,5 +17,9 @@ cv: cv.o
 artigo: artigo.o
 	gcc -o artigo artigo.c artigo.h
 
+apaga:
+	rm -f ARTIGOS.txt STOCKS.txt VENDAS.txt STRING.txt
+	
 clean:
-	rm -r all
+	rm -r ma stock sv cv artigo
+
