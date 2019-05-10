@@ -19,40 +19,45 @@ void showStock(int codigo){
     if(fdArtigos  < 0){
         printf("ERROR OPENING ARTIGOS FILE\n");
     }
-    //buscar a quantidade
+
+    //verifica se o codido existe, ie, se o numero de bytes do ficheiro for maior que o offset, entao o codigo existe
     int offset = codigo * entrieSize;
+    int readBytes = lseek(fdStock, 0, SEEK_END);
+    lseek(fdStock, 0, SEEK_SET);
 
-    lseek(fdStock, offset, SEEK_SET);
+    if (readBytes > offset) {
+
+        //buscar a quantidade
+        lseek(fdStock, offset, SEEK_SET);
+
+        read(fdStock, entry, entrieSize);
+
+        token = strtok(entry, s);
+        quantidade = strtok(NULL, s);
+        int quantidade1 = atoi(quantidade);
 
 
-    read(fdStock, entry,entrieSize);
+        //buscar preco
+        lseek(fdArtigos, offset, SEEK_SET);
 
-    token = strtok(entry, s);
-    quantidade= strtok(NULL, s);
-    int quantidade1=atoi(quantidade);
+        read(fdArtigos, entry, entrieSize);
 
+        token = strtok(entry, s);
 
-    //buscar preco
-    lseek(fdArtigos, offset, SEEK_SET);
+        precoaux = strtok(NULL, s);
+        int preco = atoi(precoaux);
+        // printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
 
-    read(fdArtigos, entry, entrieSize);
+        close(fdArtigos);
+        close(fdStock);
 
-    token = strtok(entry, s);
+        memset(entry, 0x0, entrieSize);
+        sprintf(entry, "Q: %d P:%d", quantidade1, preco);
+        memset(entry + strlen(entry), ' ', entrieSize - strlen(entry));
+        entry[entrieSize - 1] = '\n';
 
-    precoaux = strtok(NULL, s);
-    int preco=atoi(precoaux);
-   // printf("Stock %d Preço %d",quantidade1,atoi(precoaux));
-
-    close(fdArtigos);
-    close(fdStock);
-
-    memset(entry, 0x0, entrieSize);
-    sprintf(entry, "Q: %d P:%d",quantidade1,preco);
-    memset(entry + strlen(entry), ' ', entrieSize-strlen(entry));
-    entry[entrieSize - 1] = '\n';
-
-    write(1, entry,entrieSize);
-
+        write(1, entry, entrieSize);
+    }
 
 }
 
