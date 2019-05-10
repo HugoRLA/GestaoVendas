@@ -141,7 +141,7 @@ int alteraNome(int codigo,const char* nome){
     //criar apontador
 
     apontador = lseek(fdStrings, 0 , SEEK_END);
-    printf("Apontador para String : %d\n", apontador);
+    
 
     //adicionar newline ao nome
 
@@ -209,13 +209,13 @@ int alteraPreco(int codigo, const char* preco){
     char* precoaux;
 
     token = strtok(entry, s);
-    printf("Codigo: %s\n", token);
+    
 
     precoaux = strtok(NULL, s);
-    printf("preço: %s\n", preco);
+   
 
     apontador = strtok(NULL, s);
-    printf("apontador: %s\n", token);
+   
     int apontador1=atoi(apontador);
 
     sprintf(entry, "%d %s %d", codigo, preco, apontador1);
