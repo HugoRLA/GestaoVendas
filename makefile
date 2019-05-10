@@ -18,7 +18,7 @@ artigo: artigo.o
 	gcc -o artigo artigo.c artigo.h
 
 apaga:
-	rm -f ARTIGOS.txt STOCKS.txt VENDAS.txt STRING.txt
+	rm -f ARTIGOS.txt STOCKS.txt VENDAS.txt STRINGS.txt
 	
 clean:
 	rm -r ma stock sv cv artigo
