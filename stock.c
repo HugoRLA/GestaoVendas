@@ -87,8 +87,12 @@ void modifyStock(int codigo, int quantidade) {
         printf("ERROR OPENING VENDA FILE\n");
     }
 
+     int offset = codigo * entrieSize;
+    int readBytes = lseek(fdStock, 0, SEEK_END);
+    lseek(fdStock, 0, SEEK_SET);
 
-    int offset = codigo * entrieSize;
+    if (readBytes > offset) {
+  
 
     if(quantidade>0){
 
@@ -182,7 +186,7 @@ void modifyStock(int codigo, int quantidade) {
 
             write(1, "Inds\n",5);
            
-
+        }
     }
 
     close(fdVenda);
